@@ -13,7 +13,10 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "SwiftGUI",
-            dependencies: []),
+            dependencies: ["Wrap"]),
+        .target(
+            name: "Wrap",
+            path: "./Sources/Wrap/"),
         .testTarget(
             name: "SwiftGUITests",
             dependencies: ["SwiftGUI"]),
