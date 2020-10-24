@@ -1,86 +1,88 @@
 #include "wrap.h"
-#include <stdio.h>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <stdlib.h>
-#include <stdio.h>
-// #include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
-// struct Haha {
-//     int* array;
-//     int count;
-// };
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow *window);
 
-int GladLoadGLLoader() {
-    return gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-}
+// settings
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
 
-Haha CreateValue(int leng) {
-    struct Haha haha;
-    haha.count = leng;
-    haha.array = (int*) malloc(haha.count * sizeof(int));
-    return haha;
-}
-
-// void processInput(GLFWwindow *window)
-// {
-//     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-//         glfwSetWindowShouldClose(window, 1);
-// }
-
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-// void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-// {
-//     // make sure the viewport matches the new window dimensions; note that width and 
-//     // height will be significantly larger than specified on retina displays.
-//     glViewport(0, 0, width, height);
-// }
-
-int GlfwInit() {
-    if(glfwInit() != GLFW_TRUE) {
-        return 1;
-    }
-    glfwWindowHint(GLFW_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_VERSION_MINOR, 3);
+int show()
+{
+    // glfw: initialize and configure
+    // ------------------------------
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) != 0)
-{
-    printf("Failed to initialize GLAD");
-}  
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
+    // glfw window creation
+    // --------------------
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    if (window == NULL)
+    {
+        // std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+    // glad: load all OpenGL function pointers
+    // ---------------------------------------
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        // std::cout << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }    
+
+    // render loop
+    // -----------
+    while (!glfwWindowShouldClose(window))
+    {
+        // input
+        // -----
+        processInput(window);
+
+        // render
+        // ------
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+        // -------------------------------------------------------------------------------
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    // glfw: terminate, clearing all previously allocated GLFW resources.
+    // ------------------------------------------------------------------
+    glfwTerminate();
     return 0;
 }
 
-int* TestPoint() {
-    int* value = (int*) malloc(sizeof(int));
-    printf("%p\n", value);
-    return value;
+// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+// ---------------------------------------------------------------------------------------------------------
+void processInput(GLFWwindow *window)
+{
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, 1);
 }
 
-void ShowPoint(int* point) {
-    printf("%p\n", point);
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// ---------------------------------------------------------------------------------------------
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    // make sure the viewport matches the new window dimensions; note that width and 
+    // height will be significantly larger than specified on retina displays.
+    glViewport(0, 0, width, height);
 }
 
-void* WrapPoint() {
-    int* array = (int*) malloc(10 * sizeof(int));
-    return (void*) array;
-}
-
-void Init(void* point) {
-    int* value = (int*) point;
-    for(int index = 0; index < 10; index++) {
-        value[index] = index;
-    }
-}
-
-void WrapShow(void* point) {
-    printf("%p\n", point);
-    int* value = (int*) point;
-    for(int index = 0; index < 10; index++) {
-        printf("Value %d\n", value[index]);
-    }
+void wrapGlViewport(int x, int y, int width, int height) {
+    glViewport(x, y, width, height);
 }
