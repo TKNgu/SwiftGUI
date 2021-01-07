@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "SwiftOpenGL",
+        "repositoryURL": "https://github.com/TKNgu/SwiftOpenGL.git",
+        "state": {
+          "branch": "main",
+          "revision": "1d089b1d9639aed7874cba003b5d80853757a231",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
