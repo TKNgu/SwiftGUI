@@ -37,8 +37,6 @@ class App {
         glad_glGetShaderiv(shader, GLenum(GL_COMPILE_STATUS), &success);
         if success == 0 {
             glad_glGetShaderInfoLog(shader, 512, nil, &infoLog);
-            print("ERROR::SHADER::VERTEX::COMPILATION_FAILED")
-            print(String(cString: infoLog))
             throw GLADError.buildShader(log: String(cString: infoLog))
         } else {
             print("OK")
@@ -58,7 +56,7 @@ class App {
             vertices.count * MemoryLayout<Float>.size,
             &vertices, GLenum(GL_STATIC_DRAW))
 
-        var vertexShaderSource: String = """
+        var vertexShaderSource = """
         #version 330 core
         layout (location = 0) in vec3 aPos;
         void main(){
@@ -69,12 +67,14 @@ class App {
 
 
         var fragmentShaderSource = """
-        #version 330 core
-        out vec4 FragColor;
-        void main(){
-            FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-        } 
+        #version 330 core\n
+        out vec4 FragColor;\n
+        void main()\n
+        {\n
+            FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n
+        }
         """
+        print(fragmentShaderSource)
         let fragmentShader = try compileShader(source: fragmentShaderSource, type: GLenum(GL_FRAGMENT_SHADER))
 
         var shaderProgram = glad_glCreateProgram()
@@ -96,7 +96,7 @@ class App {
         glad_glVertexAttribPointer(GLuint(0), GLint(3), GLenum(GL_FLOAT), GLboolean(GL_FALSE), GLsizei(3 * MemoryLayout<Float>.size), UnsafeRawPointer(bitPattern: 0))
         glad_glEnableVertexAttribArray(0)
         glad_glUseProgram(shaderProgram)
-        glad_someOpenGLFunctionThatDrawsOurTriangle()
+        // glad_someOpenGLFunctionThatDrawsOurTriangle()
 
         while self.window.shouldClose() {
             processInput()
