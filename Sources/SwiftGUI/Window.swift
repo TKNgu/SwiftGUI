@@ -1,7 +1,6 @@
 import SwiftOpenGL.glfw
 import SwiftOpenGL.gl
 import GLAD
-import Glibc
 
 class Window {
     let window: OpaquePointer?
@@ -20,6 +19,18 @@ class Window {
 
     func shouldClose() -> Bool {
         return glfwWindowShouldClose(self.window) == 0
+    }
+
+    func close() {
+        glfwSetWindowShouldClose(self.window, Int32(1))
+    }
+
+    func isKeyPress(key: Int32) -> Bool {
+        return glfwGetKey(self.window, key) == GLFW_PRESS
+    }
+
+    func swapBuffer() {
+        glfwSwapBuffers(self.window)
     }
 }
 

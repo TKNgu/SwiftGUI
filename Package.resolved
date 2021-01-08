@@ -5,9 +5,9 @@
         "package": "SwiftOpenGL",
         "repositoryURL": "https://github.com/TKNgu/SwiftOpenGL.git",
         "state": {
-          "branch": "main",
-          "revision": "1d089b1d9639aed7874cba003b5d80853757a231",
-          "version": null
+          "branch": null,
+          "revision": "7be562199cb47e55601046206eefc4a4dc2ddcdf",
+          "version": "1.0.6"
         }
       }
     ]
