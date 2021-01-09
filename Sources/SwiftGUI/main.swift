@@ -96,7 +96,7 @@ class App {
         glad_glVertexAttribPointer(GLuint(0), GLint(3), GLenum(GL_FLOAT), GLboolean(GL_FALSE), GLsizei(3 * MemoryLayout<Float>.size), UnsafeRawPointer(bitPattern: 0))
         glad_glEnableVertexAttribArray(0)
         glad_glUseProgram(shaderProgram)
-        glad_someOpenGLFunctionThatDrawsOurTriangle()
+        // glad_someOpenGLFunctionThatDrawsOurTriangle()
 
         while self.window.shouldClose() {
             processInput()
