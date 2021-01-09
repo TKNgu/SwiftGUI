@@ -3,5 +3,7 @@
 
 int initGLAD();
 int shader();
+unsigned int load(unsigned int);
+unsigned int vao(unsigned int*, unsigned int);
 
 #endif

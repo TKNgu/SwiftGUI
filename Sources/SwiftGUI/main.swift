@@ -46,12 +46,6 @@ class App {
 
     func mainLoop() throws {
 
-        var vertices = [Float(-0.5), Float(-0.5), Float(0.0),
-            Float(0.5), Float(-0.5), Float(0.0),
-            Float(0.0), Float(0.5), Float(0.0)]
-        var VBO = UInt32(0)
-        glad_glGenBuffers(1, &VBO)
-
         var vertexShaderSource = """
         #version 330 core
         layout (location = 0) in vec3 aPos;
@@ -88,22 +82,46 @@ class App {
         glad_glDeleteShader(vertexShader)
         glad_glDeleteShader(fragmentShader)
 
+        var vertices = [Float(-0.5), Float(-0.5), Float(0.0),
+        Float(0.5), Float(-0.5), Float(0.0),
+        Float(0.0), Float(0.5), Float(0.0)]
+        var VBO = UInt32(0)
+        glad_glGenBuffers(1, &VBO)
+
+        var VAO = UInt32(0)
+        glad_glGenVertexArrays(1, &VAO)
+        glad_glBindVertexArray(VAO)
+
+        glad_glBindBuffer(GLenum(GL_ARRAY_BUFFER), VBO)
+        glad_glBufferData(GLenum(GL_ARRAY_BUFFER), vertices.count * MemoryLayout<Float>.size,
+            &vertices, GLenum(GL_STATIC_DRAW))
+        glad_glVertexAttribPointer(0, 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE),
+            GLsizei(3 * MemoryLayout<Float>.size), UnsafeRawPointer(bitPattern: 0))
+        glad_glEnableVertexAttribArray(0)
+
+        // vao(&VAO, VBO)
+
         while self.window.shouldClose() {
             processInput()
 
             glad_glClearColor(Float(0.2), Float(0.3), Float(0.3), Float(1.0))
             glad_glClear(UInt32(GL_COLOR_BUFFER_BIT))
-            glad_glBindBuffer(GLenum(GL_ARRAY_BUFFER), VBO)
-            glad_glBufferData(GLenum(GL_ARRAY_BUFFER),
-                vertices.count * MemoryLayout<Float>.size,
-                &vertices, GLenum(GL_STATIC_DRAW))
-            glad_glVertexAttribPointer(GLuint(0), GLint(3), GLenum(GL_FLOAT),
-                GLboolean(GL_FALSE), GLsizei(3 * MemoryLayout<Float>.size), UnsafeRawPointer(bitPattern: 0))
-            glad_glEnableVertexAttribArray(0)
-            glad_glUseProgram(shaderProgram)
-            glad_glDrawArrays(GLenum(GL_TRIANGLES), 0, 3)
 
-            shader()
+
+            // glad_glBindBuffer(GLenum(GL_ARRAY_BUFFER), VBO)
+            // glad_glBufferData(GLenum(GL_ARRAY_BUFFER),
+            //     vertices.count * MemoryLayout<Float>.size,
+            //     &vertices, GLenum(GL_STATIC_DRAW))
+            // glad_glVertexAttribPointer(GLuint(0), GLint(3), GLenum(GL_FLOAT),
+            //     GLboolean(GL_FALSE), GLsizei(3 * MemoryLayout<Float>.size), UnsafeRawPointer(bitPattern: 0))
+            // glad_glEnableVertexAttribArray(0)
+            // glad_glUseProgram(shaderProgram)
+            // glad_glDrawArrays(GLenum(GL_TRIANGLES), 0, 3)
+
+            glad_glUseProgram(shaderProgram);
+            glad_glBindVertexArray(VAO);
+            glad_glDrawArrays(GLenum(GL_TRIANGLES), 0, 3);
+            // shader()
 
             self.window.swapBuffer()
             glfwPollEvents()
