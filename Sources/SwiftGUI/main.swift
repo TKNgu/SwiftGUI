@@ -1,4 +1,4 @@
-import GLAD
+import LIBC
 import SwiftOpenGL.glfw
 import SwiftOpenGL.gl
 import Foundation
@@ -28,13 +28,19 @@ class App {
     }
 
     func mainLoop() throws {
+
+        var nrAttributes = Int32(0)
+        glad_glGetIntegerv(GLenum(GL_MAX_VERTEX_ATTRIBS), &nrAttributes)
+        print("Max \(nrAttributes)")
+
         while self.window.shouldClose() {
             processInput()
 
             glad_glClearColor(Float(0.2), Float(0.3), Float(0.3), Float(1.0))
             glad_glClear(UInt32(GL_COLOR_BUFFER_BIT))
 
-            glad_glPolygonMode(GLenum(GL_FRONT_AND_BACK), GLenum(GL_LINE))
+            // glad_glPolygonMode(GLenum(GL_FRONT_AND_BACK), GLenum(GL_LINE))
+            glad_glPolygonMode(GLenum(GL_FRONT_AND_BACK), GLenum(GL_FILL))
             self.simpleObject.draw()
 
             self.window.swapBuffer()

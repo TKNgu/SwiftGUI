@@ -1,5 +1,6 @@
-import GLAD
+import LIBC
 import SwiftOpenGL.gl
+import Foundation
 
 class Shader {
     let source: String
@@ -10,6 +11,12 @@ class Shader {
         self.source = source
         self.type = type
         self.shader = glad_glCreateShader(self.type)
+    }
+
+    init(url: URL, type: GLenum) throws {
+        self.type = type
+        self.shader = glad_glCreateShader(self.type)
+        self.source = try String(contentsOf: url, encoding: .utf8)
     }
 
     deinit {

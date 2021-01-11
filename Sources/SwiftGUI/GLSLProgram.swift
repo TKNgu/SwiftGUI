@@ -1,4 +1,4 @@
-import GLAD
+import LIBC
 import SwiftOpenGL.gl
 
 class GLSLProgram {
@@ -25,6 +25,24 @@ class GLSLProgram {
 
     func use() {
         glad_glUseProgram(self.program)
+    }
+
+    func setUniform(name: String, value: Float) {
+        glad_glUniform1f(
+            glad_glGetUniformLocation(GLuint(self.program), name),
+            value)
+    }
+
+    func setUniform(name: String, value: Int32) {
+        glad_glUniform1i(
+            glad_glGetUniformLocation(GLuint(self.program), name),    
+            value)
+    }
+
+    func setUniform(name: String, value: Bool) {
+        glad_glUniform1i(
+            glad_glGetUniformLocation(GLuint(self.program), name),
+            value ? 1 : 0)
     }
 
     deinit {

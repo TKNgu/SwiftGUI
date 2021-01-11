@@ -1,6 +1,6 @@
+import LIBC
 import SwiftOpenGL.glfw
 import SwiftOpenGL.gl
-import GLAD
 
 class Window {
     let window: OpaquePointer?

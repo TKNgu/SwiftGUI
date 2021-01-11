@@ -1,4 +1,4 @@
-import GLAD
+import LIBC
 import SwiftOpenGL.glfw
 
 class GLFW {

@@ -14,10 +14,10 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "SwiftGUI",
-            dependencies: ["GLAD"]),
+            dependencies: ["LIBC"]),
         .target(
-            name: "GLAD",
-            path: "./Sources/glad"),
+            name: "LIBC",
+            path: "./Sources/libc"),
         .testTarget(
             name: "SwiftGUITests",
             dependencies: ["SwiftGUI"]),
