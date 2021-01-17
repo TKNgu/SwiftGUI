@@ -18,8 +18,6 @@ class Texture {
         glad_glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MAG_FILTER), GL_LINEAR)
 
         glad_glBindTexture(GLenum(GL_TEXTURE_2D), 0)
-
-        var mat: dmat2
     }
 
     deinit {
