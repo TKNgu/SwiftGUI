@@ -7,8 +7,10 @@ class SimpleObject {
     var EBO = UInt32(0)
     var VAO = UInt32(0)
     var program: GLSLProgram
-    var texture = UInt32(0)
     var texture1 = UInt32(0)
+
+    var texture: Texture
+    var ninja: Texture
 
     init() throws {
         let shaderPath = FileManager.default.currentDirectoryPath
@@ -30,12 +32,15 @@ class SimpleObject {
         self.program.attachShader(shader: fragmentShader)
         try self.program.link()
 
+        self.texture = Texture()
+        self.ninja = Texture()
+
         glad_glGenBuffers(1, &self.VBO)
         glad_glGenBuffers(1, &self.EBO)
         glad_glGenVertexArrays(1, &self.VAO)
         
         self.bind()
-        self.loadTexture()
+        try self.loadTexture()
     }
 
     private func bind() {
@@ -81,63 +86,19 @@ class SimpleObject {
         glad_glBindVertexArray(0)
     }
 
-    func loadTexture() {
+    func loadTexture() throws {
 
         let image = FileManager.default.currentDirectoryPath
             .appendingPathComponent("data")
             .appendingPathComponent("image")
             .appendingPathComponent("wall.jpeg")
-
-        glad_glGenTextures(1, &self.texture)
-        glad_glBindTexture(GLenum(GL_TEXTURE_2D), self.texture)
-
-        glad_glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_REPEAT);	
-        glad_glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_REPEAT);
-        glad_glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_LINEAR);
-        glad_glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MAG_FILTER), GL_LINEAR);
-
-        var width = Int32(0)
-        var height = Int32(0)
-        var nrChannels  = Int32(0)
-        stbi_set_flip_vertically_on_load(Int32(1))
-        let data = stbi_load(image, &width, &height, &nrChannels, 0)
-        if data != nil {
-            glad_glTexImage2D(GLenum(GL_TEXTURE_2D), GLint(0), GLint(GL_RGB),
-                GLsizei(width), GLsizei(height),
-                GLint(0), GLenum(GL_RGB), GLenum(GL_UNSIGNED_BYTE), data)
-            glad_glGenerateMipmap(GLenum(GL_TEXTURE_2D))
-        } else {
-            print("Error load image \(image)")
-        }
-        stbi_image_free(data)
+        try self.texture.load(filePath: image)
 
         let image1 = FileManager.default.currentDirectoryPath
             .appendingPathComponent("data")
             .appendingPathComponent("image")
             .appendingPathComponent("ninja.jpeg")
-
-        glad_glGenTextures(1, &self.texture1)
-        glad_glBindTexture(GLenum(GL_TEXTURE_2D), self.texture1)
-
-        glad_glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_REPEAT);	
-        glad_glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_REPEAT);
-        glad_glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_LINEAR);
-        glad_glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MAG_FILTER), GL_LINEAR);
-
-        var width1 = Int32(0)
-        var height1 = Int32(0)
-        var nrChannels1  = Int32(0)
-        stbi_set_flip_vertically_on_load(Int32(1))
-        let data1 = stbi_load(image1, &width1, &height1, &nrChannels1, 0)
-        if data1 != nil {
-            glad_glTexImage2D(GLenum(GL_TEXTURE_2D), GLint(0), GLint(GL_RGB),
-                GLsizei(width1), GLsizei(height1),
-                GLint(0), GLenum(GL_RGB), GLenum(GL_UNSIGNED_BYTE), data1)
-            glad_glGenerateMipmap(GLenum(GL_TEXTURE_2D))
-        } else {
-            print("Error load image \(image1)")
-        }
-        stbi_image_free(data1)
+        try self.ninja.load(filePath: image1)
     }
 
     func draw() {
@@ -149,10 +110,8 @@ class SimpleObject {
         self.program.setUniform(name: "ourTexture", value: Int32(0))
         self.program.setUniform(name: "ourTexture1", value: Int32(1))
 
-        glad_glActiveTexture(GLenum(GL_TEXTURE0))
-        glad_glBindTexture(GLenum(GL_TEXTURE_2D), self.texture)
-        glad_glActiveTexture(GLenum(GL_TEXTURE1))
-        glad_glBindTexture(GLenum(GL_TEXTURE_2D), self.texture1)
+        self.texture.bind(id: GLenum(GL_TEXTURE0))
+        self.ninja.bind(id: GLenum(GL_TEXTURE1))
 
         glad_glBindVertexArray(self.VAO)
         glad_glDrawElements(GLenum(GL_TRIANGLES), GLsizei(6),

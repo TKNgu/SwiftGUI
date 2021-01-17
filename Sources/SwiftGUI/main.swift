@@ -65,6 +65,8 @@ do {
     print(log)
 } catch Shader.ShaderError.compile(let log) {
     print(log)
+} catch Texture.TextureError.loadfile(let log) {
+    print(log)
 } catch {
     print("Error")
 }
